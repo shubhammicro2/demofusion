@@ -1,0 +1,49 @@
+{
+  "name": "demopipeline_cdfdeployment",
+  "appVersion": "ac5cf16e-47cf-11f0-b339-6ad9632b00af",
+  "description": "Data Pipeline Application",
+  "change": {
+    "author": "cdap",
+    "creationTimeMillis": 1749761772671,
+    "latest": true,
+    "description": ""
+  },
+  "configuration": "{\"resources\":{\"memoryMB\":2048.0,\"virtualCores\":1.0},\"driverResources\":{\"memoryMB\":2048.0,\"virtualCores\":1.0},\"connections\":[{\"from\":\"HTTP\",\"to\":\"GCS\"}],\"comments\":[],\"postActions\":[],\"properties\":{},\"processTimingEnabled\":true,\"stageLoggingEnabled\":false,\"stages\":[{\"name\":\"HTTP\",\"plugin\":{\"name\":\"HTTP\",\"type\":\"batchsource\",\"label\":\"HTTP\",\"artifact\":{\"name\":\"http-plugins\",\"version\":\"1.4.4\",\"scope\":\"USER\"},\"properties\":{\"referenceName\":\"demo\",\"url\":\"https://google.com\",\"httpMethod\":\"GET\",\"format\":\"text\",\"authType\":\"basicAuth\",\"oauth2Enabled\":\"false\",\"httpErrorsHandling\":\"2..:Success,.*:Fail\",\"errorHandling\":\"skipOnError\",\"retryPolicy\":\"exponential\",\"linearRetryInterval\":\"30\",\"maxRetryDuration\":\"600\",\"connectTimeout\":\"120\",\"readTimeout\":\"120\",\"paginationType\":\"None\",\"waitTimeBetweenPages\":\"0\",\"verifyHttps\":\"true\",\"keystoreType\":\"Java KeyStore (JKS)\",\"keystoreKeyAlgorithm\":\"SunX509\",\"trustStoreType\":\"Java KeyStore (JKS)\",\"trustStoreKeyAlgorithm\":\"SunX509\",\"transportProtocols\":\"TLSv1.2\",\"schema\":\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"etlSchemaBody\\\",\\\"fields\\\":[{\\\"name\\\":\\\"html_content\\\",\\\"type\\\":\\\"string\\\"}]}\",\"username\":\"gsm://projects/your-gcp-project-id/secrets/basic-auth-username/versions/latest\",\"password\":\"gsm://projects/your-gcp-project-id/secrets/basic-auth-username/versions/latest\"}},\"outputSchema\":[{\"name\":\"etlSchemaBody\",\"schema\":\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"etlSchemaBody\\\",\\\"fields\\\":[{\\\"name\\\":\\\"html_content\\\",\\\"type\\\":\\\"string\\\"}]}\"}],\"id\":\"HTTP\"},{\"name\":\"GCS\",\"plugin\":{\"name\":\"GCS\",\"type\":\"batchsink\",\"label\":\"GCS\",\"artifact\":{\"name\":\"google-cloud\",\"version\":\"0.23.1\",\"scope\":\"SYSTEM\"},\"properties\":{\"useConnection\":\"true\",\"path\":\"gs://demo0000/demo/\",\"suffix\":\"yyyy-MM-dd-HH-mm\",\"format\":\"json\",\"location\":\"us\",\"contentType\":\"application/octet-stream\",\"schema\":\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"text\\\",\\\"fields\\\":[{\\\"name\\\":\\\"body\\\",\\\"type\\\":\\\"string\\\"}]}\",\"connection\":\"${conn(demo)}\"}},\"outputSchema\":\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"text\\\",\\\"fields\\\":[{\\\"name\\\":\\\"body\\\",\\\"type\\\":\\\"string\\\"}]}\",\"inputSchema\":[],\"id\":\"GCS\"}],\"schedule\":\"0 1 */1 * *\",\"engine\":\"spark\",\"numOfRecordsPreview\":100.0,\"rangeRecordsPreview\":{\"min\":1.0,\"max\":\"5000\"},\"description\":\"Data Pipeline Application\",\"maxConcurrentRuns\":1.0}",
+  "datasets": [],
+  "programs": [
+    {
+      "type": "Spark",
+      "app": "demopipeline_cdfdeployment",
+      "name": "phase-1",
+      "description": "Sources \u0027HTTP\u0027 to sinks \u0027GCS\u0027."
+    },
+    {
+      "type": "Workflow",
+      "app": "demopipeline_cdfdeployment",
+      "name": "DataPipelineWorkflow",
+      "description": "Data Pipeline Workflow"
+    }
+  ],
+  "plugins": [
+    {
+      "id": "GCS:json",
+      "name": "json",
+      "type": "validatingOutputFormat"
+    },
+    {
+      "id": "GCS",
+      "name": "GCS",
+      "type": "batchsink"
+    },
+    {
+      "id": "HTTP",
+      "name": "HTTP",
+      "type": "batchsource"
+    }
+  ],
+  "artifact": {
+    "name": "cdap-data-pipeline",
+    "version": "6.10.1",
+    "scope": "SYSTEM"
+  }
+}
